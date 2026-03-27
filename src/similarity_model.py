@@ -5,7 +5,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 def load_data():
-    return pd.read_csv("data/featured_restaurants.csv")
+    import os
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(BASE_DIR, "..", "data", "featured_restaurants.csv")
+    df = pd.read_csv(data_path)
+    return df
 
 def cuisine_text(df):
     cuisine_cols = [
