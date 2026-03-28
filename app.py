@@ -23,15 +23,15 @@ def load_cached_data():
     df = load_data()
     return cuisine_text(df)
 
-@st.cache_resource
-def get_similarity(df):
-    return compute_similarity_matrix(df)
-
 st.write("...Loading data")
-
-#----Load Data
 df = load_cached_data()
 st.write("Data Loaded Successfully")
+
+@st.cache_resource
+def get_similarity():
+    df = load_data()
+    df = cuisine_text(df)
+    return compute_similarity_matrix(df)
 
 #crashes when computing at once beacise dataset is large.
 #similarity_matrix = get_similarity(df)
@@ -107,7 +107,7 @@ if st.session_state.results is not None:
                 #----Similar Restaurants
                 if st.session_state.selected_restaurant == row['restaurant_name']:
                     st.write("Computing similarity...")
-                    similarity_matrix = get_similarity(df)
+                    similarity_matrix = get_similarity()
                     st.write("...Similarity Matrix is ready...")
 
                     st.markdown("## Similar Restaurants")
