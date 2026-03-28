@@ -1,6 +1,9 @@
 #UI
 
 import streamlit as st
+
+st.write("App starts successfully.")
+
 import pandas as pd
 from src.recommender import get_recommendations
 from src.similarity_model import (
@@ -10,7 +13,8 @@ from src.similarity_model import (
 
 #----Page Configuration
 st.set_page_config(
-    page_title="Smart Restaurants Intelligence System", layout="wide"
+    page_title="Smart Restaurants Intelligence System",
+    layout="wide"
 )
 
 #----Cache
@@ -23,9 +27,16 @@ def load_cached_data():
 def load_similarity(df):
     return compute_similarity_matrix(df)
 
+st.write("...Loading data")
+
 #----Load Data
 df = load_cached_data()
-similarity_matrix = load_similarity(df)
+st.write("Data Loaded Successfully")
+
+
+#crashes when computing at once beacise dataset is large.
+#similarity_matrix = load_similarity(df)
+#st.write("Similarity Matrix ready.")
 
 #----Session State'
 if "selected_restaurant" not in st.session_state:
@@ -96,6 +107,10 @@ if st.session_state.results is not None:
 
                 #----Similar Restaurants
                 if st.session_state.selected_restaurant == row['restaurant_name']:
+                    st.write("Computing similarity...")
+                    similarity_matrix = compute_similarity_matrix(df)
+                    st.write("...Similarity Matrix is ready...")
+
                     st.markdown("## Similar Restaurants")
                     similar = get_similar_restaurants(
                         df, similarity_matrix,
