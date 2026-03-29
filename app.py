@@ -8,7 +8,7 @@ import pandas as pd
 from src.recommender import get_recommendations
 from src.similarity_model import (
     load_data, cuisine_text,
-    compute_similarity_matrix, get_similar_restaurants
+    get_similar_restaurants
 )
 
 #----Page Configuration
@@ -27,15 +27,17 @@ st.write("...Loading data")
 df = load_cached_data()
 st.write("Data Loaded Successfully")
 
-@st.cache_resource
-def get_similarity():
-    df = load_data()
-    df = cuisine_text(df)
-    return compute_similarity_matrix(df)
+#@st.cache_resource
+#def get_similarity():
+    #df = load_data()
+    #df = cuisine_text(df)
+    #return compute_similarity_matrix(df)
 
 #crashes when computing at once beacise dataset is large.
 #similarity_matrix = get_similarity(df)
 #st.write("Similarity Matrix ready.")
+
+#COMPUTED SIMILARITY MATRIX ON DEMAND OR PRECOMPUTE SAMRTLY --- to avoid crash on large dataset. (1 vs N, not NxN)
 
 #----Session State'
 if "selected_restaurant" not in st.session_state:
@@ -106,13 +108,11 @@ if st.session_state.results is not None:
 
                 #----Similar Restaurants
                 if st.session_state.selected_restaurant == row['restaurant_name']:
-                    st.write("Computing similarity...")
-                    similarity_matrix = get_similarity()
-                    st.write("...Similarity Matrix is ready...")
-
+                    st.write("Finding similar restaurants...")
+                
                     st.markdown("## Similar Restaurants")
                     similar = get_similar_restaurants(
-                        df, similarity_matrix,
+                        df,
                         restaurant_name = st.session_state.selected_restaurant,
                         top_n = 5
                     )
